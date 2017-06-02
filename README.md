@@ -37,7 +37,7 @@ staking=1
 ### Optional: Copy Existing Chain Data to Sync Even Faster
     cp -r ~/.reddcoin/database /var/run/reddcoin
     cp -r ~/.reddcoin/blocks /var/run/reddcoin
-    cp -r ~/.reddcoin/chaindata /var/run/reddcoin
+    cp -r ~/.reddcoin/chainstate /var/run/reddcoin
 
 ### Run Docker Container
     docker run \
