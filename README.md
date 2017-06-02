@@ -24,6 +24,8 @@ server=1
 staking=1
 ```
 
+**NOTE:** `reddcoin-cli` also can use this file for connecting to a remote RPC server.
+
 ### Optional: Copy Wallet
     cp ~/.reddcoin/wallet.dat /var/run/reddcoin
 
@@ -47,12 +49,11 @@ staking=1
       --name reddcoin-container \
       reddcoin
 
-
 ### Unlock your Wallet (for Staking)
-    reddcoin-cli --datadir=~/.reddcoin walletpassphrase [your_password] 99999999 true
+    reddcoin-cli walletpassphrase [your_password] 99999999 true
     
 ### Check Staking Status
-    reddcoin-cli --datadir=~/.reddcoin getstakinginfo
+    reddcoin-cli getstakinginfo
     
 **NOTE:** Your wallet **must** be unlocked in order to participate in staking.
 
