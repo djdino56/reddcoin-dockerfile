@@ -27,6 +27,8 @@ staking=1
 ### Optional: Copy Wallet
     cp ~/.reddcoin/wallet.dat /var/run/reddcoin
 
+**WARNING:** Always backup your wallet, as sudden termination of the container can cause corruption.
+
 ### Optional: Copy Bootstrap Data to Sync Faster
     cp ~/.reddcoin/bootstrap.dat /var/run/reddcoin
 
@@ -37,3 +39,6 @@ staking=1
       --volume /var/run/reddcoin:/mnt/reddcoin \
       --name reddcoin-container \
       reddcoin
+
+
+**NOTE:** Your wallet **must** be unlocked in order to participate in staking.
