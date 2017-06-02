@@ -48,4 +48,8 @@ staking=1
       reddcoin
 
 
+### Unlock your Wallet (for Staking)
+    reddcoin-cli --datadir=~/.reddcoin walletpassphrase [your_password] 99999999 true
+    
 **NOTE:** Your wallet **must** be unlocked in order to participate in staking.
+
