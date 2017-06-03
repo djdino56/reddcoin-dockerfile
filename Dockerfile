@@ -22,8 +22,8 @@ RUN wget $REDDCOIN_RELEASE \
   && tar -xvzf $REDDCOIN_ARCHIVE \
   && rm $REDDCOIN_ARCHIVE
 
-# Make the Reddcoin ports available to the Docker container's host.
-EXPOSE 45443
+# Make the Reddcoin ports available to the Docker container (--publish 45443:8000 from host).
+EXPOSE 8000
 
 # Configure the Reddcoin daemon to run when the container starts
 # Forward 8000 to localhost:45443 so it's accessible outside the container.
