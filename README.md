@@ -1,8 +1,13 @@
 # reddcoin-dockerfile
-Dockerfile for Reddcoin 2.x on Linux
+Dockerfile for Reddcoin Core 2.0 Daemon + Staking on Linux (Debian)
 
-### Build Docker Image
+:moneybag: Donations welcomed at `RkXmtTHthn3MNVMS6m9kzdzunVdTt9fjpv` :bow:
+
+### Build Docker Image (Debian)
     docker build -t reddcoin .
+   
+### Build Docker Image (Raspberry Pi)
+    docker build -t reddcoin -f Dockerfile-rpi .
     
 ### Create Data Directory
     mkdir -p /var/run/reddcoin
@@ -16,7 +21,7 @@ Dockerfile for Reddcoin 2.x on Linux
 ```
 rpcuser=reddcoinrpc
 rpcpassword=Super$ecretPassw0rd!
-rpcallowip=127.0.0.1/16
+rpcallowip=172.17.*.*
 rpcport=45443
 port=
 gen=0
@@ -24,36 +29,27 @@ server=1
 staking=1
 ```
 
-**NOTE:** `reddcoin-cli` also can use this file for connecting to a remote RPC server.
+**NOTE:** You should **not** modify the `rpcallowip=172.17.*.*` line if you are running `reddcoind` inside a Docker container! This is the subnet that the Docker `bridge0` interface uses to expose containers to the host.
 
 ### Optional: Copy Wallet
     cp ~/.reddcoin/wallet.dat /var/run/reddcoin
 
 **WARNING:** Always backup your wallet, as sudden termination of the container can cause corruption.
 
-### Optional: Copy Bootstrap Data to Sync Faster
-    cp ~/.reddcoin/bootstrap.dat /var/run/reddcoin
-
-**OR**  
-
 ### Optional: Copy Existing Chain Data to Sync Even Faster
-    cp -r ~/.reddcoin/database /var/run/reddcoin
     cp -r ~/.reddcoin/blocks /var/run/reddcoin
     cp -r ~/.reddcoin/chainstate /var/run/reddcoin
-
+    
 ### Run Docker Container
     docker run \
       --detach \
-      --publish 45443:8000 \
+      --publish 45443:45443 \
       --volume /var/run/reddcoin:/mnt/reddcoin \
+      --env WALLET_PASSPHRASE=your_wallet_passphrase \
       --name reddcoin-container \
-      reddcoin
+      stratis
+      
+**NOTE:** Your wallet will automatically be unlocked and start staking when the container is run. It is important that your wallet passphrase is set correctly (above) in order for this to work properly.
 
-### Unlock your Wallet (for Staking)
-    reddcoin-cli walletpassphrase [your_password] 99999999 true
-    
-### Check Staking Status
-    reddcoin-cli getstakinginfo
-    
-**NOTE:** Your wallet **must** be unlocked in order to participate in staking.
-
+### Tail Container Logs
+    docker logs -f reddcoin-container
