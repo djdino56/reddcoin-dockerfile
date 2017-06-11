@@ -21,7 +21,7 @@ Dockerfile for Reddcoin Core 2.0 Daemon + Staking on Linux (Debian)
 ```
 rpcuser=reddcoinrpc
 rpcpassword=Super$ecretPassw0rd!
-rpcallowip=172.17.*.*
+rpcallowip=172.17.0.0/16
 rpcport=45443
 port=
 gen=0
@@ -29,7 +29,7 @@ server=1
 staking=1
 ```
 
-**NOTE:** You should **not** modify the `rpcallowip=172.17.*.*` line if you are running `reddcoind` inside a Docker container! This is the subnet that the Docker `bridge0` interface uses to expose containers to the host.
+**NOTE:** You should **not** modify the `rpcallowip=172.17.0.0/16` line if you are running `reddcoind` inside a Docker container! This is the subnet that the Docker `bridge0` interface uses to expose containers to the host.
 
 ### Optional: Copy Wallet
     cp ~/.reddcoin/wallet.dat /var/run/reddcoin
