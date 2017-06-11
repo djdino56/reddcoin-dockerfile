@@ -2,32 +2,71 @@
 FROM debian:jessie-slim
 MAINTAINER Erik Rogers <erik.rogers@live.com>
 
-ENV REDDCOIN_VERSION 2.0.0.0
-ENV REDDCOIN_PACKAGE reddcoin-$REDDCOIN_VERSION-linux
-ENV REDDCOIN_ARCHIVE ${REDDCOIN_PACKAGE}.tar.gz
-
-# Choose a binary release of Reddcoin.
-ENV REDDCOIN_RELEASE https://github.com/reddcoin-project/reddcoin/releases/download/v$REDDCOIN_VERSION/$REDDCOIN_ARCHIVE
-# Choose the directory within the container where Docker will place Reddcoin.
-ENV REDDCOIN_DIR /opt/$REDDCOIN_PACKAGE
-
+# Install tool chain for building Reddcoin Core from sources
 RUN apt-get update && apt-get install -y \
-  socat \
+  build-essential \
+  libtool \
+  autotools-dev \
+  autoconf \
+  pkgconf \
+  libssl-dev \
+  libboost-all-dev \
+  libminiupnpc-dev \
+  libprotobuf-dev \
+  protobuf-compiler \
+  libqt4-dev \
+  libqrencode-dev \
+  bsdmainutils \
   wget \
   && rm -rf /var/cache/apk/*
 
-# Download and install Reddcoin.
-WORKDIR /opt
-RUN wget $REDDCOIN_RELEASE \
-  && tar -xvzf $REDDCOIN_ARCHIVE \
-  && rm $REDDCOIN_ARCHIVE
+# Build BerkleyDB 4.8 from source (jessie/wheezy only has 5.x+ in apt repos)
+ENV BDB_VERSION 4.8.30.NC
+ENV BDB_PACKAGE db-$BDB_VERSION
+ENV BDB_ARCHIVE $BDB_PACKAGE.tar.gz
+ENV BDB_DOWNLOAD http://download.oracle.com/berkeley-db/$BDB_ARCHIVE
 
-# Make the Reddcoin ports available to the Docker container (--publish 45443:8000 from host).
-EXPOSE 8000
+ENV BDB_PREFIX /opt/db4
+RUN mkdir -p $BDB_PREFIX
 
-# Configure the Reddcoin daemon to run when the container starts
-# Forward 8000 to localhost:45443 so it's accessible outside the container.
-# Specify the Reddcoin directory as /mnt/reddcoin so that you can view these files outside
-# of Docker.
-WORKDIR $REDDCOIN_DIR
-ENTRYPOINT socat tcp-listen:8000,reuseaddr,fork tcp:localhost:45443 & ./bin/64/reddcoind -datadir=/mnt/reddcoin
+# Download Reddcoin Core sources
+ENV REDDCOIN_VERSION 2.0.0.0
+ENV REDDCOIN_PACKAGE reddcoin-${REDDCOIN_VERSION}
+ENV REDDCOIN_ARCHIVE v$REDDCOIN_VERSION.tar.gz
+ENV REDDCOIN_DOWNLOAD https://github.com/reddcoin-project/reddcoin/archive/$REDDCOIN_ARCHIVE
+
+# Build BerkleyDB 4.8 library and install it (static build)
+WORKDIR /tmp
+RUN wget $BDB_DOWNLOAD \
+  && tar -xzvf $BDB_ARCHIVE \
+  && cd $BDB_PACKAGE/build_unix \
+  && ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX \
+  && make install \
+  && rm -rf /tmp/$BDB_PACKAGE \
+  && rm /tmp/$BDB_ARCHIVE
+
+# Build Reddcoin Core from sources (including our compiled BerkleyDB 4.8)
+WORKDIR /tmp
+RUN wget $REDDCOIN_DOWNLOAD \
+  && tar -xzvf $REDDCOIN_ARCHIVE \
+  && cd $REDDCOIN_PACKAGE \
+  && ./autogen.sh \
+  && ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include" \
+  && make \
+  && make install \
+  && rm -rf /tmp/$REDDCOIN_PACKAGE \
+  && rm /tmp/$REDDCOIN_ARCHIVE
+
+ENV REDDCOIN_DATA_DIR /mnt/reddcoin
+
+# Copy script and set executable flag
+COPY auto-stake.sh /usr/bin/auto-stake.sh
+RUN chmod +x /usr/bin/auto-stake.sh
+
+# Expose Reddcoin daemon RPC port
+EXPOSE 45443
+
+# Run the auto-stake script.
+RUN mkdir -p /var/run/reddcoin
+WORKDIR /var/run/reddcoin
+ENTRYPOINT ["/usr/bin/auto-stake.sh"]
