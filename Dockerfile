@@ -1,4 +1,3 @@
-# Based on Michael Lynch's Sia on Docker Guide (https://mtlynch.io/sia-via-docker/)
 FROM debian:jessie-slim
 MAINTAINER Erik Rogers <erik.rogers@live.com>
 
