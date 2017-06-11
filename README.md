@@ -47,7 +47,7 @@ staking=1
       --volume /var/run/reddcoin:/mnt/reddcoin \
       --env WALLET_PASSPHRASE=your_wallet_passphrase \
       --name reddcoin-container \
-      stratis
+      reddcoin
       
 **NOTE:** Your wallet will automatically be unlocked and start staking when the container is run. It is important that your wallet passphrase is set correctly (above) in order for this to work properly.
 
