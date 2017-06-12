@@ -1,60 +1,31 @@
 FROM debian:jessie-slim
 MAINTAINER Erik Rogers <erik.rogers@live.com>
 
-# Install tool chain for building Reddcoin Core from sources
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-  build-essential \
-  libtool \
-  autotools-dev \
-  autoconf \
-  pkgconf \
-  libssl-dev \
-  libboost-all-dev \
-  libminiupnpc-dev \
-  libprotobuf-dev \
-  protobuf-compiler \
-  libqt4-dev \
-  libqrencode-dev \
-  bsdmainutils \
   wget \
   && rm -rf /var/cache/apk/*
 
-# Build BerkleyDB 4.8 from source (jessie/wheezy only has 5.x+ in apt repos)
-ENV BDB_VERSION 4.8.30.NC
-ENV BDB_PACKAGE db-$BDB_VERSION
-ENV BDB_ARCHIVE $BDB_PACKAGE.tar.gz
-ENV BDB_DOWNLOAD http://download.oracle.com/berkeley-db/$BDB_ARCHIVE
-
-ENV BDB_PREFIX /opt/db4
-RUN mkdir -p $BDB_PREFIX
-
-# Download Reddcoin Core sources
+# Download Reddcoin Core release
 ENV REDDCOIN_VERSION 2.0.0.0
-ENV REDDCOIN_PACKAGE reddcoin-${REDDCOIN_VERSION}
-ENV REDDCOIN_ARCHIVE v$REDDCOIN_VERSION.tar.gz
-ENV REDDCOIN_DOWNLOAD https://github.com/reddcoin-project/reddcoin/archive/$REDDCOIN_ARCHIVE
+ENV REDDCOIN_PACKAGE reddcoin-$REDDCOIN_VERSION-linux
+ENV REDDCOIN_ARCHIVE $REDDCOIN_PACKAGE.tar.gz
+ENV REDDCOIN_RELEASE https://github.com/reddcoin-project/reddcoin/releases/download/v$REDDCOIN_VERSION/$REDDCOIN_ARCHIVE
 
-# Build BerkleyDB 4.8 library and install it (static build)
-WORKDIR /tmp
-RUN wget $BDB_DOWNLOAD \
-  && tar -xzvf $BDB_ARCHIVE \
-  && cd $BDB_PACKAGE/build_unix \
-  && ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX \
-  && make install \
-  && rm -rf /tmp/$BDB_PACKAGE \
-  && rm /tmp/$BDB_ARCHIVE
+ENV REDDCOIN_DIR /opt/$REDDCOIN_PACKAGE
 
-# Build Reddcoin Core from sources (including our compiled BerkleyDB 4.8)
+# Download release and copy 64-bit binaries to /opt/reddcoin
 WORKDIR /tmp
-RUN wget $REDDCOIN_DOWNLOAD \
+RUN wget $REDDCOIN_RELEASE \
   && tar -xzvf $REDDCOIN_ARCHIVE \
   && cd $REDDCOIN_PACKAGE \
-  && ./autogen.sh \
-  && ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include" \
-  && make \
-  && make install \
+  && mkdir -p $REDDCOIN_DIR/bin \
+  && cp bin/64/* $REDDCOIN_DIR/bin \
   && rm -rf /tmp/$REDDCOIN_PACKAGE \
   && rm /tmp/$REDDCOIN_ARCHIVE
+
+# Add to PATH
+ENV PATH $REDDCOIN_DIR/bin:$PATH
 
 ENV REDDCOIN_DATA_DIR /mnt/reddcoin
 
