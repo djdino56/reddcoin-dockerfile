@@ -1,10 +1,9 @@
-#!/bin/bash
-set -e
+#!/bin/bash -e
 
 echo "Starting Reddcoin daemon..."
 reddcoind -datadir=$REDDCOIN_DATA_DIR -rescan -detachdb &
 
-echo "Waiting for daemon before unlocking wallet..."
+echo "Waiting for daemon..."
 sleep 60
 
 n=0
@@ -18,7 +17,7 @@ do
   sleep 5
 done
 
-if [ $@ -eq 0 ]; then
+if [ "$?" -eq 0 ]; then
   echo "Wallet unlocked successfully."
 else
   echo "Unable to unlock wallet after 5 minutes."
