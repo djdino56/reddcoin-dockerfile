@@ -1,7 +1,13 @@
 #!/bin/bash -e
 
 echo "Starting Reddcoin daemon..."
-reddcoind -datadir=$REDDCOIN_DATA_DIR -rescan -detachdb &
+if [ "$REDDCOIN_RESCAN" = true ]; then
+  echo "true"
+  reddcoind -datadir=$REDDCOIN_DATA_DIR -rescan -detachdb &
+else
+  echo "false"
+  reddcoind -datadir=$REDDCOIN_DATA_DIR -detachdb &
+fi
 
 echo "Waiting for daemon..."
 sleep 60
