@@ -51,5 +51,12 @@ staking=1
       
 **NOTE:** Your wallet will automatically be unlocked and start staking when the container is run. It is important that your wallet passphrase is set correctly (above) in order for this to work properly.
 
+**NOTE:** You can save some time by disabling the rescan after you've successfully used an imported wallet. In other words, disable rescan if you need to restart the container.
+    
+    docker run \
+      ...
+      --env REDDCOIN_RESCAN=false
+      ...
+
 ### Tail Container Logs
     docker logs -f reddcoin-container
