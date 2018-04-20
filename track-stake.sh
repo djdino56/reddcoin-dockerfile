@@ -15,6 +15,7 @@ EXPECTED_TIME=$(echo "${STAKING_INFO_JSON}" | jq '.expectedtime')
 
 # Build CSV and append
 if [ ! -f $FILE_PATH ]; then
+  echo "Creating file for tracking stake info over time..."
   HEADER="DATE, BALANCE, STAKING, DIFFICULTY, AVG_WEIGHT, TOTAL_WEIGHT, NET_STAKE_WEIGHT, EXPECTED_TIME"
   echo $HEADER >> $FILE_PATH
 fi
