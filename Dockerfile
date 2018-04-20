@@ -33,7 +33,8 @@ ENV REDDCOIN_DATA_DIR /mnt/reddcoin
 # Copy scripts and set executable flag
 COPY auto-stake.sh notify-stake.sh /usr/bin/
 RUN chmod +x /usr/bin/auto-stake.sh \
-  && chmod +x /usr/bin/notify-stake.sh
+  && chmod +x /usr/bin/notify-stake.sh \
+  && chmod +x /usr/bin/track-stake.sh
 
 # Expose Reddcoin daemon RPC port
 EXPOSE 45443
