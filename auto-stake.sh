@@ -30,9 +30,6 @@ fi
 
 while true
 do
-  now="$(date +'%m/%d/%Y')"
-  balance="$(reddcoin-cli -datadir=$REDDCOIN_DATA_DIR getbalance)"
-  line="$now, $balance"
-  echo $line >> $REDDCOIN_DATA_DIR/balance.csv
-  sleep 86400
+  "track-stake.sh"
+  sleep 3600
 done
