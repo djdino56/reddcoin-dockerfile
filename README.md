@@ -75,5 +75,12 @@ One might find the progression of their staking info (and balance) interesting. 
 2018-04-01 00:31:26|1000|true|164.31246572|1128271|1128271|11761944443|625485
 2018-04-01 01:31:26|1005|true|164.31927620|11128271|11128271|11761944443|4525485
 
+This is on by default. To turn it off, add an environment variable to container:
+
+    docker run \
+      ...
+      --env REDDCOIN_TRACK_STAKE=false
+      ...
+
 ### Tail Container Logs
     docker logs -f reddcoin-container

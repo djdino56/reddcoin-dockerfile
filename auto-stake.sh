@@ -28,8 +28,10 @@ else
   exit 1
 fi
 
-while true
-do
-  "track-stake.sh"
-  sleep 3600
-done
+if [ "$REDDCOIN_TRACK_STAKE" != false ]; then
+ while true
+ do
+   "track-stake.sh"
+   sleep 3600
+ done
+fi
