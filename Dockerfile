@@ -31,7 +31,7 @@ ENV PATH $REDDCOIN_DIR/bin:$PATH
 ENV REDDCOIN_DATA_DIR /mnt/reddcoin
 
 # Copy scripts and set executable flag
-COPY auto-stake.sh notify-stake.sh /usr/bin/
+COPY auto-stake.sh notify-stake.sh track-stake.sh /usr/bin/
 RUN chmod +x /usr/bin/auto-stake.sh \
   && chmod +x /usr/bin/notify-stake.sh \
   && chmod +x /usr/bin/track-stake.sh
