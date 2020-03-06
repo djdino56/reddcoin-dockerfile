@@ -1,5 +1,4 @@
 FROM debian:jessie-slim
-MAINTAINER Erik Rogers <erik.rogers@live.com>
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -8,7 +7,7 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/cache/apk/*
 
 # Download Reddcoin Core release
-ENV REDDCOIN_VERSION 2.0.1.2
+ENV REDDCOIN_VERSION 3.0.1
 ENV REDDCOIN_PACKAGE reddcoin-$REDDCOIN_VERSION-linux
 ENV REDDCOIN_ARCHIVE $REDDCOIN_PACKAGE.tar.gz
 ENV REDDCOIN_RELEASE https://github.com/reddcoin-project/reddcoin/releases/download/v$REDDCOIN_VERSION/$REDDCOIN_ARCHIVE
@@ -29,7 +28,7 @@ RUN wget $REDDCOIN_RELEASE \
 ENV PATH $REDDCOIN_DIR/bin:$PATH
 
 ENV REDDCOIN_DATA_DIR /mnt/reddcoin
-
+COPY data/ /mnt/reddcoin
 # Copy scripts and set executable flag
 COPY auto-stake.sh notify-stake.sh track-stake.sh /usr/bin/
 RUN chmod +x /usr/bin/auto-stake.sh \

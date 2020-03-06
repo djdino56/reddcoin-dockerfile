@@ -1,0 +1,12 @@
+version: '3'
+services:
+  reddcoin_staking_service:
+    container_name: reddcoin_staking_service
+    image: reddcoin_staking_service
+    restart: unless-stopped
+    environment: 
+        - "WALLET_PASSPHRASE=Winkelier56!"
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
