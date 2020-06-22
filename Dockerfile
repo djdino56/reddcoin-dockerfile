@@ -18,10 +18,10 @@ ENV REDDCOIN_DIR /opt/$REDDCOIN_PACKAGE
 WORKDIR /tmp
 RUN wget $REDDCOIN_RELEASE \
   && tar -xzvf $REDDCOIN_ARCHIVE \
-  && cd $REDDCOIN_PACKAGE \
+  && cd reddcoin-$REDDCOIN_VERSION \
   && mkdir -p $REDDCOIN_DIR/bin \
   && cp bin/64/* $REDDCOIN_DIR/bin \
-  && rm -rf /tmp/$REDDCOIN_PACKAGE \
+  && rm -rf /tmp/reddcoin-$REDDCOIN_VERSION \
   && rm /tmp/$REDDCOIN_ARCHIVE
 
 # Add to PATH
