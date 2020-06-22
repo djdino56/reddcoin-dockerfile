@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y \
   wget \
   && rm -rf /var/cache/apk/*
 
-# Download Reddcoin Core release
+# Download Reddcoin Core release https://download.reddcoin.com/bin/reddcoin-core-3.10.0/reddcoin-3.10.0-linux64.tar.gz
 ENV REDDCOIN_VERSION 3.10.0
-ENV REDDCOIN_PACKAGE reddcoin-$REDDCOIN_VERSION-linux
+ENV REDDCOIN_PACKAGE reddcoin-$REDDCOIN_VERSION-linux64
 ENV REDDCOIN_ARCHIVE $REDDCOIN_PACKAGE.tar.gz
-ENV REDDCOIN_RELEASE https://github.com/reddcoin-project/reddcoin/releases/download/v$REDDCOIN_VERSION/$REDDCOIN_ARCHIVE
+ENV REDDCOIN_RELEASE https://download.reddcoin.com/bin/reddcoin-core-$REDDCOIN_VERSION/$REDDCOIN_ARCHIVE
 
 ENV REDDCOIN_DIR /opt/$REDDCOIN_PACKAGE
 
